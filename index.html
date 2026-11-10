@@ -1,0 +1,54 @@
+
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Money Empire</title>
+<style>
+body{margin:0;background:#101827;color:white;font-family:Arial;text-align:center;padding:25px}
+h1{color:#ffd700}
+.card{background:#1e293b;padding:25px;border-radius:20px;margin:20px auto;max-width:400px}
+.money{font-size:36px;color:#00e676;margin:25px}
+button{background:#ffc107;border:0;padding:16px 25px;border-radius:12px;font-size:17px;font-weight:bold;margin:8px;width:90%}
+button:active{transform:scale(.97)}
+</style>
+</head>
+<body>
+<h1>💰 MONEY EMPIRE</h1>
+<div class="card">
+<p>Твой капитал</p>
+<div class="money" id="money">0 ₽</div>
+<button onclick="earn()">💵 Заработать деньги</button>
+</div>
+<div class="card">
+<h2>🏢 Бизнес</h2>
+<p>Доход: <span id="income">0</span> ₽/сек</p>
+<button onclick="buy()">Купить бизнес — 100 ₽</button>
+<p>Количество бизнесов: <span id="business">0</span></p>
+</div>
+<script>
+let money=0;
+let income=0;
+let businesses=0;
+function update(){
+document.getElementById("money").innerText=Math.floor(money)+" ₽";
+document.getElementById("income").innerText=income;
+document.getElementById("business").innerText=businesses;
+}
+function earn(){money+=10;update();}
+function buy(){
+if(money>=100){
+money-=100;
+businesses++;
+income+=5;
+update();
+}else{
+alert("Недостаточно денег!");
+}
+}
+setInterval(()=>{money+=income;update();},1000);
+update();
+</script>
+</body>
+</html>
