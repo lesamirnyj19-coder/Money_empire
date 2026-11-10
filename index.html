@@ -367,7 +367,20 @@ document.getElementById("businessList").innerHTML=
 businesses.map((b,i)=>itemHTML(b.name,"Доход: "+fmt(b.income)+" ₽/сек",b.cost,"buyBusiness("+i+")",data.businesses[i]||0)).join("");
 
 
+
 document.getElementById("carList").innerHTML=
+cars.map((c,i)=>`
+<div class="item">
+<img src="${c.image}" onerror="this.style.display='none'">
+<div class="info">
+<strong>${c.name}</strong>
+<p>Цена: ${fmt(c.cost)} ₽</p>
+<p>В гараже: ${data.cars[i]||0}</p>
+<button onclick="buyCar(${i})">Купить</button>
+</div>
+</div>
+`).join("");
+
 cars.map((c,i)=>`
 <div class="item">
 <img src="${c.image}" style="width:100%;height:150px;object-fit:cover;border-radius:12px;" onerror="this.style.display='none'">
