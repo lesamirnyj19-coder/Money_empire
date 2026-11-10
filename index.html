@@ -22,7 +22,41 @@ button:disabled{opacity:.35}
 .tabs{display:flex;gap:7px;overflow-x:auto;margin:15px 0;padding-bottom:7px}
 .tabs button{white-space:nowrap;background:#24324b;color:white}
 .tabs button.active{background:#f4bd38;color:#111}
-.item{background:#1d2b44;padding:13px;border-radius:13px;margin:10px 0;display:flex;gap:10px;align-items:center}
+.item{
+background:#1d2b44;
+padding:13px;
+border-radius:13px;
+margin:10px 0;
+display:block;
+overflow:hidden;
+}
+
+.item img{
+display:block;
+width:100%;
+height:180px;
+object-fit:cover;
+border-radius:12px;
+margin-bottom:12px;
+}
+
+.item .info{
+display:block;
+}
+
+.item strong{
+display:block;
+margin-bottom:5px;
+}
+
+.item p{
+margin:7px 0;
+}
+
+.item button{
+width:100%;
+margin-top:8px;
+}
 .item .info{flex:1;min-width:0}
 .item strong{display:block;margin-bottom:5px}
 .item small,.muted{color:#aab9d0;font-size:13px}
