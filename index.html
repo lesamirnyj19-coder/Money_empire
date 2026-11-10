@@ -3,52 +3,366 @@
 <html lang="ru">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Money Empire</title>
 <style>
-body{margin:0;background:#101827;color:white;font-family:Arial;text-align:center;padding:25px}
-h1{color:#ffd700}
-.card{background:#1e293b;padding:25px;border-radius:20px;margin:20px auto;max-width:400px}
-.money{font-size:36px;color:#00e676;margin:25px}
-button{background:#ffc107;border:0;padding:16px 25px;border-radius:12px;font-size:17px;font-weight:bold;margin:8px;width:90%}
-button:active{transform:scale(.97)}
+*{box-sizing:border-box}
+body{margin:0;background:#0b1020;color:white;font-family:Arial;padding:15px 14px 90px}
+header{text-align:center;padding:12px}
+h1{color:#ffd34e;font-size:28px}
+.sub{color:#9ba9c5;font-size:12px}
+.balance{background:linear-gradient(135deg,#273c68,#17223c);padding:23px;border-radius:20px;text-align:center;margin:14px 0}
+.money{font-size:34px;color:#ffd34e;font-weight:bold;margin:12px}
+.stats{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.stat,.panel{background:#172238;border:1px solid #293956;border-radius:15px;padding:15px;margin:10px 0}
+.stat b{display:block;color:#ffd34e;font-size:17px;margin-top:7px}
+button{border:0;border-radius:12px;padding:13px;background:#f4bd38;color:#171717;font-weight:bold;font-size:14px}
+button:disabled{opacity:.35}
+.mainbtn{width:100%;font-size:17px;padding:17px}
+.tabs{display:flex;gap:7px;overflow-x:auto;margin:15px 0;padding-bottom:7px}
+.tabs button{white-space:nowrap;background:#24324b;color:white}
+.tabs button.active{background:#f4bd38;color:#111}
+.item{background:#1d2b44;padding:13px;border-radius:13px;margin:10px 0;display:flex;gap:10px;align-items:center}
+.item .info{flex:1;min-width:0}
+.item strong{display:block;margin-bottom:5px}
+.item small,.muted{color:#aab9d0;font-size:13px}
+.item button{min-width:90px;padding:11px 7px}
+h2{font-size:19px;color:#ffd34e}
+.hidden{display:none}
+input{background:#24324b;border:1px solid #52617a;color:white;padding:12px;border-radius:10px;width:100%;margin:8px 0}
+footer{text-align:center;color:#72829e;font-size:11px;margin:25px}
 </style>
 </head>
 <body>
-<h1>💰 MONEY EMPIRE</h1>
-<div class="card">
-<p>Твой капитал</p>
+<header>
+<h1>👑 MONEY EMPIRE</h1>
+<div class="sub">ПОСТРОЙ СВОЮ ФИНАНСОВУЮ ИМПЕРИЮ</div>
+</header>
+
+<div class="balance">
+<div class="muted">ТВОЙ КАПИТАЛ</div>
 <div class="money" id="money">0 ₽</div>
-<button onclick="earn()">💵 Заработать деньги</button>
+<div class="muted">💰 Доход: <span id="income">0</span> ₽/сек</div>
+<button class="mainbtn" style="margin-top:16px" onclick="earn()">💵 ЗАРАБОТАТЬ +10 ₽</button>
 </div>
-<div class="card">
-<h2>🏢 Бизнес</h2>
-<p>Доход: <span id="income">0</span> ₽/сек</p>
-<button onclick="buy()">Купить бизнес — 100 ₽</button>
-<p>Количество бизнесов: <span id="business">0</span></p>
+
+<div class="stats">
+<div class="stat">⭐ Уровень<b id="level">1</b></div>
+<div class="stat">🏆 Опыт<b id="xp">0 XP</b></div>
+<div class="stat">🏢 Бизнесы<b id="businessCount">0</b></div>
+<div class="stat">💎 Состояние<b id="wealth">0 ₽</b></div>
 </div>
+
+<div class="tabs">
+<button class="active" onclick="tab('home',this)">🏠 Главная</button>
+<button onclick="tab('business',this)">🏢 Бизнес</button>
+<button onclick="tab('cars',this)">🚗 Авто</button>
+<button onclick="tab('homes',this)">🏡 Недвижимость</button>
+<button onclick="tab('upgrades',this)">📈 Улучшения</button>
+<button onclick="tab('profile',this)">👤 Профиль</button>
+</div>
+
+<section id="home">
+<div class="panel">
+<h2>🌆 Твоя империя</h2>
+<p class="muted">Начни с малого и стань миллиардером!</p>
+<h3>📊 Доход</h3>
+<div id="incomeDetails" class="muted">Пока нет источников дохода.</div>
+</div>
+<div class="panel">
+<h2>🎁 Ежедневная награда</h2>
+<p class="muted">Заходи каждый день и получай деньги.</p>
+<button id="daily" onclick="dailyReward()">Забрать 500 ₽</button>
+</div>
+<div class="panel">
+<h2>🎯 Задания</h2>
+<div id="quests"></div>
+</div>
+<div class="panel">
+<h2>🏆 Достижения</h2>
+<div id="achievements"></div>
+</div>
+</section>
+
+<section id="business" class="hidden">
+<h2>🏢 Покупка бизнеса</h2>
+<div id="businessList"></div>
+</section>
+<section id="cars" class="hidden">
+<h2>🚗 Автомобильная коллекция</h2>
+<div id="carList"></div>
+</section>
+<section id="homes" class="hidden">
+<h2>🏡 Недвижимость</h2>
+<div id="homeList"></div>
+</section>
+<section id="upgrades" class="hidden">
+<h2>📈 Развитие империи</h2>
+<div id="upgradeList"></div>
+</section>
+<section id="profile" class="hidden">
+<h2>👤 Профиль предпринимателя</h2>
+<div class="panel">
+<label>Имя игрока</label>
+<input id="playerName" maxlength="20" placeholder="Введи имя">
+<button onclick="saveName()">Сохранить имя</button>
+<h3 id="profileName">Предприниматель</h3>
+<p>Уровень: <b id="profileLevel">1</b></p>
+<p>Опыт: <b id="profileXP">0</b></p>
+<p>Всего заработано: <b id="totalEarned">0 ₽</b></p>
+<p>Всего покупок: <b id="totalBuys">0</b></p>
+<p>Машин: <b id="carCount">0</b></p>
+<p>Недвижимости: <b id="homeCount">0</b></p>
+<button onclick="resetGame()" style="background:#d9534f;color:white">Сбросить игру</button>
+</div>
+</section>
+<footer>Money Empire © 2026</footer>
 <script>
-let money=0;
-let income=0;
-let businesses=0;
-function update(){
-document.getElementById("money").innerText=Math.floor(money)+" ₽";
-document.getElementById("income").innerText=income;
-document.getElementById("business").innerText=businesses;
-}
-function earn(){money+=10;update();}
-function buy(){
-if(money>=100){
-money-=100;
-businesses++;
-income+=5;
-update();
-}else{
-alert("Недостаточно денег!");
-}
-}
-setInterval(()=>{money+=income;update();},1000);
-update();
 </script>
 </body>
 </html>
+
+<script>
+const businesses=[
+{name:"☕ Кофейня",cost:100,income:2},
+{name:"🍔 Ресторан",cost:1000,income:15},
+{name:"🛒 Супермаркет",cost:10000,income:100},
+{name:"🏨 Отель",cost:100000,income:700},
+{name:"🏭 Завод",cost:1000000,income:5000},
+{name:"🏦 Банк",cost:10000000,income:40000},
+{name:"🚀 IT-компания",cost:100000000,income:300000},
+{name:"🌐 Корпорация",cost:1000000000,income:2500000}
+];
+
+const cars=[
+{name:"🚗 Lada Granta",cost:5000},
+{name:"🚙 BMW M3",cost:50000},
+{name:"🏎️ Porsche 911",cost:500000},
+{name:"🏁 Lamborghini",cost:5000000},
+{name:"💎 Bugatti Chiron",cost:50000000}
+];
+
+const homes=[
+{name:"🏠 Студия",cost:10000,income:3},
+{name:"🏢 Квартира",cost:100000,income:30},
+{name:"🏡 Загородный дом",cost:1000000,income:300},
+{name:"🏰 Особняк",cost:10000000,income:3000},
+{name:"🌆 Небоскрёб",cost:100000000,income:35000}
+];
+
+const upgrades=[
+{name:"Улучшенный маркетинг",cost:1000,mult:1.25},
+{name:"Новая технология",cost:10000,mult:1.5},
+{name:"Сильная команда",cost:100000,mult:2},
+{name:"Международный рынок",cost:1000000,mult:3},
+{name:"Корпоративная империя",cost:10000000,mult:5}
+];
+
+let data={
+money:0,xp:0,level:1,totalEarned:0,totalBuys:0,
+businesses:[],cars:[],homes:[],upgrades:[],
+name:"Предприниматель",last:Date.now(),daily:""
+};
+
+function load(){
+try{
+let old=JSON.parse(localStorage.getItem("moneyEmpire"));
+if(old)data={...data,...old};
+}catch(e){}
+}
+
+function save(){
+data.last=Date.now();
+localStorage.setItem("moneyEmpire",JSON.stringify(data));
+}
+
+function fmt(n){
+if(n>=1e12)return (n/1e12).toFixed(2)+" трлн";
+if(n>=1e9)return (n/1e9).toFixed(2)+" млрд";
+if(n>=1e6)return (n/1e6).toFixed(2)+" млн";
+return Math.floor(n).toLocaleString("ru-RU");
+}
+
+function income(){
+let sum=0;
+businesses.forEach((b,i)=>sum+=b.income*(data.businesses[i]||0));
+homes.forEach((h,i)=>sum+=h.income*(data.homes[i]||0));
+let mult=1;
+data.upgrades.forEach(i=>mult*=upgrades[i].mult);
+return sum*mult;
+}
+
+function earn(){
+data.money+=10;
+data.totalEarned+=10;
+addXP(2);
+render();
+}
+
+function addXP(n){
+data.xp+=n;
+while(data.xp>=data.level*100){
+data.xp-=data.level*100;
+data.level++;
+}
+}
+
+function buyBusiness(i){
+let b=businesses[i];
+if(data.money<b.cost)return alert("Недостаточно денег!");
+data.money-=b.cost;
+data.businesses[i]=(data.businesses[i]||0)+1;
+data.totalBuys++;
+addXP(20);
+render();
+}
+
+function buyCar(i){
+let c=cars[i];
+if(data.money<c.cost)return alert("Недостаточно денег!");
+data.money-=c.cost;
+data.cars[i]=(data.cars[i]||0)+1;
+data.totalBuys++;
+addXP(10);
+render();
+}
+
+function buyHome(i){
+let h=homes[i];
+if(data.money<h.cost)return alert("Недостаточно денег!");
+data.money-=h.cost;
+data.homes[i]=(data.homes[i]||0)+1;
+data.totalBuys++;
+addXP(20);
+render();
+}
+
+function buyUpgrade(i){
+let u=upgrades[i];
+if(data.upgrades.includes(i))return;
+if(data.money<u.cost)return alert("Недостаточно денег!");
+data.money-=u.cost;
+data.upgrades.push(i);
+data.totalBuys++;
+addXP(50);
+render();
+}
+
+function dailyReward(){
+let today=new Date().toDateString();
+if(data.daily===today)return;
+data.money+=500;
+data.totalEarned+=500;
+data.daily=today;
+addXP(20);
+render();
+}
+
+function saveName(){
+data.name=document.getElementById("playerName").value.trim()||"Предприниматель";
+render();
+}
+
+function tab(id,btn){
+document.querySelectorAll("section").forEach(s=>s.classList.add("hidden"));
+document.getElementById(id).classList.remove("hidden");
+document.querySelectorAll(".tabs button").forEach(b=>b.classList.remove("active"));
+btn.classList.add("active");
+}
+
+function itemHTML(name,desc,cost,action,owned){
+return `<div class="item"><div class="info"><strong>${name}</strong><small>${desc}<br>Цена: ${fmt(cost)} ₽ · Куплено: ${owned}</small></div><button onclick="${action}">Купить</button></div>`;
+}
+
+function render(){
+let inc=income();
+
+document.getElementById("money").textContent=fmt(data.money)+" ₽";
+document.getElementById("income").textContent=fmt(inc);
+document.getElementById("level").textContent=data.level;
+document.getElementById("xp").textContent=data.xp+" XP";
+
+document.getElementById("businessCount").textContent=
+data.businesses.reduce((a,b)=>a+(b||0),0);
+
+let wealth=data.money;
+businesses.forEach((b,i)=>wealth+=(data.businesses[i]||0)*b.cost);
+cars.forEach((c,i)=>wealth+=(data.cars[i]||0)*c.cost);
+homes.forEach((h,i)=>wealth+=(data.homes[i]||0)*h.cost);
+
+document.getElementById("wealth").textContent=fmt(wealth)+" ₽";
+
+document.getElementById("incomeDetails").textContent=
+"Твой бизнес и недвижимость приносят "+fmt(inc)+" ₽ каждую секунду.";
+
+document.getElementById("businessList").innerHTML=
+businesses.map((b,i)=>itemHTML(b.name,"Доход: "+fmt(b.income)+" ₽/сек",b.cost,"buyBusiness("+i+")",data.businesses[i]||0)).join("");
+
+document.getElementById("carList").innerHTML=
+cars.map((c,i)=>itemHTML(c.name,"Коллекция автомобилей",c.cost,"buyCar("+i+")",data.cars[i]||0)).join("");
+
+document.getElementById("homeList").innerHTML=
+homes.map((h,i)=>itemHTML(h.name,"Аренда: "+fmt(h.income)+" ₽/сек",h.cost,"buyHome("+i+")",data.homes[i]||0)).join("");
+
+document.getElementById("upgradeList").innerHTML=
+upgrades.map((u,i)=>{
+let bought=data.upgrades.includes(i);
+return `<div class="item"><div class="info"><strong>${u.name}</strong><small>Доход ×${u.mult} · Цена: ${fmt(u.cost)} ₽</small></div><button ${bought?"disabled":""} onclick="buyUpgrade(${i})">${bought?"Куплено":"Улучшить"}</button></div>`;
+}).join("");
+
+document.getElementById("daily").disabled=
+data.daily===new Date().toDateString();
+
+document.getElementById("daily").textContent=
+data.daily===new Date().toDateString()?"Награда получена":"Забрать 500 ₽";
+
+document.getElementById("quests").innerHTML=
+`<p>💵 Накопи 1 000 ₽ — ${data.money>=1000?"✅":"⏳"}</p>
+<p>🏢 Купи первый бизнес — ${data.businesses.some(x=>x>0)?"✅":"⏳"}</p>
+<p>🚗 Купи автомобиль — ${data.cars.some(x=>x>0)?"✅":"⏳"}</p>
+<p>🏡 Купи недвижимость — ${data.homes.some(x=>x>0)?"✅":"⏳"}</p>`;
+
+document.getElementById("achievements").innerHTML=
+`<p>⭐ Первый уровень — ✅</p>
+<p>💼 Первый бизнес — ${data.businesses.some(x=>x>0)?"✅":"⏳"}</p>
+<p>🚘 Три автомобиля — ${data.cars.reduce((a,b)=>a+(b||0),0)>=3?"✅":"⏳"}</p>
+<p>🏰 Первая недвижимость — ${data.homes.some(x=>x>0)?"✅":"⏳"}</p>`;
+
+document.getElementById("profileName").textContent=data.name;
+document.getElementById("profileLevel").textContent=data.level;
+document.getElementById("profileXP").textContent=data.xp;
+document.getElementById("totalEarned").textContent=fmt(data.totalEarned)+" ₽";
+document.getElementById("totalBuys").textContent=data.totalBuys;
+document.getElementById("carCount").textContent=data.cars.reduce((a,b)=>a+(b||0),0);
+document.getElementById("homeCount").textContent=data.homes.reduce((a,b)=>a+(b||0),0);
+document.getElementById("playerName").value=data.name;
+
+save();
+}
+
+function resetGame(){
+if(confirm("Точно начать заново? Весь прогресс будет удалён.")){
+localStorage.removeItem("moneyEmpire");
+location.reload();
+}
+}
+
+load();
+
+let away=Math.min(8*60*60,Math.max(0,(Date.now()-data.last)/1000));
+if(away>5){
+let bonus=income()*away;
+data.money+=bonus;
+data.totalEarned+=bonus;
+setTimeout(()=>alert("Пока тебя не было, империя заработала "+fmt(bonus)+" ₽!"),500);
+}
+
+render();
+
+setInterval(()=>{
+let inc=income();
+data.money+=inc;
+data.totalEarned+=inc;
+render();
+},1000);
+</script>
