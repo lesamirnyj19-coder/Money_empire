@@ -134,13 +134,40 @@ const businesses=[
 {name:"🌐 Корпорация",cost:1000000000,income:2500000}
 ];
 
+
 const cars=[
-{name:"🚗 Lada Granta",cost:5000},
-{name:"🚙 BMW M3",cost:50000},
-{name:"🏎️ Porsche 911",cost:500000},
-{name:"🏁 Lamborghini",cost:5000000},
-{name:"💎 Bugatti Chiron",cost:50000000}
+{name:"Lada Granta",cost:5000,image:"https://images.unsplash.com/photo-1552519507-da3b142c6e3d"},
+{name:"Lada Vesta",cost:10000,image:"https://images.unsplash.com/photo-1492144534655-ae79c964c9d7"},
+{name:"Lada Priora",cost:12000,image:"https://images.unsplash.com/photo-1503376780353-7e6692767b70"},
+{name:"Lada Niva",cost:15000,image:"https://images.unsplash.com/photo-1533473359331-0135ef1b58bf"},
+{name:"BMW M3",cost:50000,image:"https://images.unsplash.com/photo-1555215695-3004980ad54e"},
+{name:"BMW M5",cost:80000,image:"https://images.unsplash.com/photo-1556189250-72ba954cfc2b"},
+{name:"BMW X5",cost:90000,image:"https://images.unsplash.com/photo-1519641471654-76ce0107ad1b"},
+{name:"Mercedes C63 AMG",cost:100000,image:"https://images.unsplash.com/photo-1618843479313-40f8afb4b4d8"},
+{name:"Mercedes E63 AMG",cost:150000,image:"https://images.unsplash.com/photo-1618843479618-39b5f4b7f4f0"},
+{name:"Mercedes G63",cost:250000,image:"https://images.unsplash.com/photo-1520031441872-265b8ff70366"},
+{name:"Mercedes S-Class",cost:200000,image:"https://images.unsplash.com/photo-1563720223185-11003d516935"},
+{name:"Audi RS6",cost:180000,image:"https://images.unsplash.com/photo-1603584173870-7f23fdae1b7a"},
+{name:"Audi RS7",cost:200000,image:"https://images.unsplash.com/photo-1606664515524-ed2f786a0bd6"},
+{name:"Toyota Camry",cost:40000,image:"https://images.unsplash.com/photo-1621007947382-bb3c3994e3fb"},
+{name:"Toyota Supra",cost:120000,image:"https://images.unsplash.com/photo-1621993202323-f438eec934ff"},
+{name:"Toyota Land Cruiser",cost:150000,image:"https://images.unsplash.com/photo-1519608487953-e999c86e7455"},
+{name:"Nissan GT-R",cost:250000,image:"https://images.unsplash.com/photo-1580273916550-e323be2ae537"},
+{name:"Mazda RX-7",cost:130000,image:"https://images.unsplash.com/photo-1552519507-da3b142c6e3d"},
+{name:"Ford Mustang",cost:100000,image:"https://images.unsplash.com/photo-1584345604476-8ec5e12e42dd"},
+{name:"Chevrolet Camaro",cost:110000,image:"https://images.unsplash.com/photo-1533473359331-0135ef1b58bf"},
+{name:"Dodge Charger",cost:130000,image:"https://images.unsplash.com/photo-1552519507-da3b142c6e3d"},
+{name:"Porsche 911",cost:500000,image:"https://images.unsplash.com/photo-1503376780353-7e6692767b70"},
+{name:"Porsche Cayenne",cost:300000,image:"https://images.unsplash.com/photo-1506015391300-4802dc74de2e"},
+{name:"Ferrari 488",cost:1000000,image:"https://images.unsplash.com/photo-1592198084033-aade902d1aae"},
+{name:"Ferrari SF90",cost:2500000,image:"https://images.unsplash.com/photo-1592198084033-aade902d1aae"},
+{name:"Lamborghini Huracan",cost:1500000,image:"https://images.unsplash.com/photo-1511919884226-fd3cad34687c"},
+{name:"Lamborghini Aventador",cost:3000000,image:"https://images.unsplash.com/photo-1544829099-b9a0c07fad1a"},
+{name:"Lamborghini Urus",cost:2000000,image:"https://images.unsplash.com/photo-1519641471654-76ce0107ad1b"},
+{name:"Bugatti Chiron",cost:50000000,image:"https://images.unsplash.com/photo-1566023888479-7d4a8d1a3c2f"},
+{name:"McLaren 720S",cost:4000000,image:"https://images.unsplash.com/photo-1621135802920-133df287f89c"}
 ];
+
 
 const homes=[
 {name:"🏠 Студия",cost:10000,income:3},
@@ -298,11 +325,31 @@ document.getElementById("incomeDetails").textContent=
 document.getElementById("businessList").innerHTML=
 businesses.map((b,i)=>itemHTML(b.name,"Доход: "+fmt(b.income)+" ₽/сек",b.cost,"buyBusiness("+i+")",data.businesses[i]||0)).join("");
 
+
 document.getElementById("carList").innerHTML=
-cars.map((c,i)=>itemHTML(c.name,"Коллекция автомобилей",c.cost,"buyCar("+i+")",data.cars[i]||0)).join("");
+cars.map((c,i)=>`
+<div class="item">
+<img src="${c.image}" style="width:100%;height:150px;object-fit:cover;border-radius:12px;" onerror="this.style.display='none'">
+<h3>${c.name}</h3>
+<p>Цена: ${fmt(c.cost)} ₽</p>
+<p>В гараже: ${data.cars[i]||0}</p>
+<button onclick="buyCar(${i})">Купить</button>
+</div>
+`).join("");
+
+
 
 document.getElementById("homeList").innerHTML=
-homes.map((h,i)=>itemHTML(h.name,"Аренда: "+fmt(h.income)+" ₽/сек",h.cost,"buyHome("+i+")",data.homes[i]||0)).join("");
+homes.map((h,i)=>`
+<div class="item">
+<img src="${h.image||'https://images.unsplash.com/photo-1600596542815-ffad4c1539a9'}" style="width:100%;height:150px;object-fit:cover;border-radius:12px;" onerror="this.style.display='none'">
+<h3>${h.name}</h3>
+<p>Цена: ${fmt(h.cost)} ₽</p>
+<p>Доход от аренды: ${fmt(h.income)} ₽/сек</p>
+<p>В собственности: ${data.homes[i]||0}</p>
+<button onclick="buyHome(${i})">Купить</button>
+</div>
+`).join("");
 
 document.getElementById("upgradeList").innerHTML=
 upgrades.map((u,i)=>{
