@@ -367,7 +367,8 @@ document.getElementById("businessList").innerHTML=
 businesses.map((b,i)=>itemHTML(b.name,"Доход: "+fmt(b.income)+" ₽/сек",b.cost,"buyBusiness("+i+")",data.businesses[i]||0)).join("");
 
 
-
+if(!window.carsRendered){
+window.carsRendered=true;
 document.getElementById("carList").innerHTML=
 
 
@@ -383,7 +384,7 @@ homes.map((h,i)=>`
 <p>В собственности: ${data.homes[i]||0}</p>
 <button onclick="buyHome(${i})">Купить</button>
 </div>
-`).join("");
+`).join("");}
 
 document.getElementById("upgradeList").innerHTML=
 upgrades.map((u,i)=>{
